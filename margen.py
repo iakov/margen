@@ -24,15 +24,21 @@ import os
 
 import cv2 as cv
 
+def palette2((row,col)):
+    maxDarkLuma = 100 if row % 5 == 0 or col % 5 == 0  else 180
+    colors = [(maxDarkLuma * 7 / 10, 0, 0), (0, maxDarkLuma * 6 / 10, 0), (0, 0, maxDarkLuma)]
+    return colors[(row + col) % len(colors)]
 
 def generate_palette(s):
-    maxDarkLuma = 120
     n = int(s)
     if n == 0:
         return lambda _: (0, 0, 0)
     elif n == 1:
-        colors = [(maxDarkLuma*9/10, 0, 0), (0, maxDarkLuma * 7 / 10, 0), (0, 0, maxDarkLuma)]
-        return lambda (row, col): colors[(row + col) % len(colors)]
+        maxDarkLuma = 150
+        colors = [(maxDarkLuma * 7 / 10, 0, 0), (0, maxDarkLuma * 6 / 10, 0), (0, 0, maxDarkLuma)]
+        return lambda(row,col): colors[(row + col) % len(colors)]
+    elif n == 2:
+        return palette2
     else:
         raise argparse.ArgumentTypeError("palette %r not implemented" % s)
 
@@ -103,7 +109,7 @@ def main():
         marker = g.generate(code)
         if marker is None: continue
         filename = args.dir + '/{0:04}.png'.format(code)
-        cv.cvtColor(marker, cv.COLOR_RGB2BGR565, marker)
+        cv.cvtColor(marker, cv.COLOR_RGB2BGR, marker)
         cv.imwrite(filename, marker, [cv.IMWRITE_PNG_COMPRESSION, 9])
 
 
