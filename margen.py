@@ -25,7 +25,7 @@ import os
 import cv2 as cv
 
 def palette2((row,col)):
-    maxDarkLuma = 100 if row % 5 == 0 or col % 5 == 0  else 180
+    maxDarkLuma = 140 if row % 5 == 0 or col % 5 == 0  else 250
     colors = [(maxDarkLuma * 7 / 10, 0, 0), (0, maxDarkLuma * 6 / 10, 0), (0, 0, maxDarkLuma)]
     return colors[(row + col) % len(colors)]
 
@@ -39,6 +39,8 @@ def generate_palette(s):
         return lambda(row,col): colors[(row + col) % len(colors)]
     elif n == 2:
         return palette2
+    elif n == 3:
+        return lambda(row,col): palette2((row,col)) if row % 5 != 0 and col % 5 != 0 else (0, 0, 0)
     else:
         raise argparse.ArgumentTypeError("palette %r not implemented" % s)
 
