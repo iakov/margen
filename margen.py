@@ -26,8 +26,13 @@ import cv2 as cv
 
 
 def generate_palette(s):
-    if int(s) == 0:
+    maxDarkLuma = 120
+    n = int(s)
+    if n == 0:
         return lambda _: (0, 0, 0)
+    elif n == 1:
+        colors = [(maxDarkLuma*9/10, 0, 0), (0, maxDarkLuma * 7 / 10, 0), (0, 0, maxDarkLuma)]
+        return lambda (row, col): colors[(row + col) % len(colors)]
     else:
         raise argparse.ArgumentTypeError("palette %r not implemented" % s)
 
@@ -80,7 +85,7 @@ class Generator:
         return self.img
 
     def __init__(self, args):
-        self.img = cv.bitwise_not(np.zeros(((6+2) * args.boxSize, (6+2) * args.boxSize, 3), np.uint8))
+        self.img = cv.bitwise_not(np.zeros(((6 + 2) * args.boxSize, (6 + 2) * args.boxSize, 3), np.uint8))
         self.args = args
 
 
@@ -98,8 +103,8 @@ def main():
         marker = g.generate(code)
         if marker is None: continue
         filename = args.dir + '/{0:04}.png'.format(code)
-        cv.cvtColor(marker, cv.COLOR_RGB2BGR, marker)
-        cv.imwrite(filename, marker, [cv.IMWRITE_PNG_COMPRESSION, 6])
+        cv.cvtColor(marker, cv.COLOR_RGB2BGR565, marker)
+        cv.imwrite(filename, marker, [cv.IMWRITE_PNG_COMPRESSION, 9])
 
 
 if __name__ == "__main__":
