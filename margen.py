@@ -49,8 +49,8 @@ class Generator:
         if color is None:
             color = self.args.palette(pos)
         row, col = pos
-        top_left = (col * self.args.boxSize, row * self.args.boxSize)
-        down_right = ((col + 1) * self.args.boxSize - 1, (row + 1) * self.args.boxSize - 1)
+        top_left = ((col + 1) * self.args.boxSize, (row + 1) * self.args.boxSize)
+        down_right = ((col + 2) * self.args.boxSize - 1, (row + 2) * self.args.boxSize - 1)
         points = np.array([top_left, (down_right[0], top_left[1]), down_right, (top_left[0], down_right[1])])
         cv.fillConvexPoly(self.img, points, color)
 
@@ -80,7 +80,7 @@ class Generator:
         return self.img
 
     def __init__(self, args):
-        self.img = np.zeros((6 * args.boxSize, 6 * args.boxSize, 3), np.uint8)
+        self.img = cv.bitwise_not(np.zeros(((6+2) * args.boxSize, (6+2) * args.boxSize, 3), np.uint8))
         self.args = args
 
 
