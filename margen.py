@@ -74,7 +74,7 @@ class Generator:
         binCode = '1' + binCode[0:11] + '1' + binCode[11:] + '0'
 
         """Check message (for parity, etc.)"""
-        if binCode[3] == '1' or binCode[8] == '1' or binCode.count('1') % 2 != 0:
+        if binCode[3] == '1' or binCode[4] == '1' or binCode.count('1') % 2 != 0:
             if not self.args.force:
                 return None
 
