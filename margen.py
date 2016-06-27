@@ -54,6 +54,7 @@ def parse_args():
     parser.add_argument('--palette', dest='palette', metavar='P', type=generate_palette, default=generate_palette("0"),
                         help='use palette #P ( 0 -- b/w) ')
     parser.add_argument('--box-size', dest='boxSize', type=int, default=50, help='bit box size per side in pixels')
+    parser.add_argument('--verbose', dest='verbose', action='store_true', help='verbose output')
     return parser.parse_args()
 
 
@@ -78,6 +79,7 @@ class Generator:
         """Check message (for parity, etc.)"""
         if binCode[3] == '1' or binCode[4] == '1' or binCode.count('1') % 2 != 0:
             if not self.args.force:
+                if self.args.verbose: print '%d\t=> %s (-)'%(code,binCode)
                 return None
 
         """Draw border"""
@@ -90,7 +92,10 @@ class Generator:
             pos = (i / 4 + 1, i % 4 + 1)
             self.draw_box(pos, None if binCode[i] == '1' else (255, 255, 255))
 
+        if self.args.verbose: print "%d\t=> %s (+)"%(code,binCode)
+
         return self.img
+
 
     def __init__(self, args):
         self.img = cv.bitwise_not(np.zeros(((6 + 2) * args.boxSize, (6 + 2) * args.boxSize, 3), np.uint8))
